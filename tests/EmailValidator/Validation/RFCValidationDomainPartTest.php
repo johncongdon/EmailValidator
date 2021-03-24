@@ -2,6 +2,7 @@
 
 namespace Egulias\EmailValidator\Tests\EmailValidator\Validation;
 
+use Egulias\EmailValidator\Result\Reason\DomainTooLong;
 use PHPUnit\Framework\TestCase;
 use Egulias\EmailValidator\EmailLexer;
 use Egulias\EmailValidator\Warning\TLD;
@@ -76,6 +77,9 @@ class RFCValidationDomainPartTest extends TestCase
             ['validipv4@[127.0.0.0]'],
             ['validipv4@127.0.0.0'],
             ['withhyphen@domain-exam.com'],
+            ['example@toolonglocalparttoolonglocalparttoolonglocalparttoolonglocalpart.co.uk'],
+            ['example@toolonglocalparttoolonglocalparttoolonglocalparttoolonglocalpart.test.co.uk'],
+            ['example@test.toolonglocalparttoolonglocalparttoolonglocalparttoolonglocalpart.co.uk'],
         );
     }
 
@@ -122,11 +126,8 @@ class RFCValidationDomainPartTest extends TestCase
             ['test@example.com. []'],
             ['test@test. example.com'],
             ['example@toolonglocalparttoolonglocalparttoolonglocalparttoolonglocalparttoolonglocalparttoolonglocal'.
-            'parttoolonglocalparttoolonglocalparttoolonglocalparttoolonglocalparttoolonglocalparttoolonglocalpart'.
-            'toolonglocalparttoolonglocalparttoolonglocalparttoolonglocalpar'],
-            ['example@toolonglocalparttoolonglocalparttoolonglocalparttoolonglocalpart.co.uk'],
-            ['example@toolonglocalparttoolonglocalparttoolonglocalparttoolonglocalpart.test.co.uk'],
-            ['example@test.toolonglocalparttoolonglocalparttoolonglocalparttoolonglocalpart.co.uk'],
+                'parttoolonglocalparttoolonglocalparttoolonglocalparttoolonglocalparttoolonglocalparttoolonglocalpart'.
+                'toolonglocalparttoolonglocalparttoolonglocalparttoolonglocalpar'],
             ['test@email*a.com'],
             ['test@email!a.com'],
             ['test@email&a.com'],
@@ -179,9 +180,9 @@ class RFCValidationDomainPartTest extends TestCase
             [new InvalidEmail(new CRNoLF(), "["), "example@[\r]"],
             [new InvalidEmail(new ExpectingATEXT('Invalid token in domain: ,'), ','), 'example@exam,ple.com'],
             [new InvalidEmail(new ExpectingATEXT("Invalid token in domain: '"), "'"), "test@example.com'"],
-            [new InvalidEmail(new LabelTooLong(), "."), sprintf('example@%s.com', str_repeat('ъ', 64))],
-            [new InvalidEmail(new LabelTooLong(), "."), sprintf('example@%s.com', str_repeat('a4t', 22))],
-            [new InvalidEmail(new LabelTooLong(), ""), sprintf('example@%s', str_repeat('a4t', 22))],
+            [new InvalidEmail(new DomainTooLong(), ""), sprintf('example@%s.com', str_repeat('ъ', 255))],
+            [new InvalidEmail(new DomainTooLong(), ""), sprintf('example@%s.com', str_repeat('a4t', 85))],
+            [new InvalidEmail(new DomainTooLong(), ""), sprintf('example@%s', str_repeat('a4t', 85))],
         ];
     }
 

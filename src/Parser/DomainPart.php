@@ -178,10 +178,10 @@ class DomainPart extends PartParser
                 return $literalResult;
             }
 
-                $labelCheck = $this->checkLabelLength();
-                if ($labelCheck->isInvalid()) {
-                    return $labelCheck;
-                }
+                #$labelCheck = $this->checkLabelLength();
+                #if ($labelCheck->isInvalid()) {
+                    #return $labelCheck;
+                #}
 
             $FwsResult = $this->parseFWS();
             if($FwsResult->isInvalid()) {
